@@ -3,6 +3,7 @@ package com.cegeka.switchfully.security.external.authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -16,11 +17,10 @@ public class FakeAuthenticationService {
             ExternalAuthenticaton.externalAuthenticaton().withUsername("GENNY").withPassword("RALLY").withRoles(newArrayList("GENERAL"))
     );
 
-    public ExternalAuthenticaton getUser(String username, String password) {
+    public Optional<ExternalAuthenticaton> getUser(String username, String password) {
         return externalAuthenticatons.stream()
                 .filter(externalAuthenticaton -> externalAuthenticaton.getUsername().equals(username))
                 .filter(externalAuthenticaton -> externalAuthenticaton.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }
