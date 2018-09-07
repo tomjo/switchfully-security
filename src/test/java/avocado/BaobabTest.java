@@ -47,8 +47,21 @@ public class BaobabTest extends RestAssuredTest {
                 .statusCode(OK.value());
     }
 
-
-
+    @Test
+    public void userCanAccessBothPrivateAndHumanResourcesRoleSecuredMethods() {
+        givenRequestForUser("NONKEL", "BOB")
+                .when()
+                .get(String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"))
+                .then()
+                .assertThat()
+                .statusCode(OK.value());
+        givenRequestForUser("NONKEL", "BOB")
+                .when()
+                .post(String.format("%s/%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "promote", "ZWANETTA"))
+                .then()
+                .assertThat()
+                .statusCode(OK.value());
+    }
 
     @Test
     public void launchNukes_givenUserWithRoleCivilian_ThenShouldGetForbidden() {

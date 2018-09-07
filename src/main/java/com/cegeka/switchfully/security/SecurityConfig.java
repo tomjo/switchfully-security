@@ -53,6 +53,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                Password = SAM
                 .withUser("UNCLE").password(("{MD5}{ANDRE}212acec2581451c651fb0ee15db1ad59")).roles(HUMAN_RELATIONSHIPS_ROLE)
                 .and()
+//                Password = BOB
+                .withUser("NONKEL").password(("{MD5}{6aD4DY6xly+2FGd6iVoIhEbMMkyDDojXIQp/7PUQU9A=}ca44d56ff82918cde866d19a8398ff8b")).roles(PRIVATE_ROLE, HUMAN_RELATIONSHIPS_ROLE)
+                .and()
 //                PASSWORD = RALLY
                 .withUser("GENNY").password(("{MD5}{FRIENDS4LIFE}1bf699ee7fe9e40b317197702b6dc44f")).roles(GENERAL_ROLE);
     }
