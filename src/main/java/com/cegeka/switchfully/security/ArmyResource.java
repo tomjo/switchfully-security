@@ -15,7 +15,7 @@ public class ArmyResource {
 
     public static final String ARMY_RESOURCE_PATH = "/armies";
 
-    @PreAuthorize("hasAnyRole('"+PRIVATE_ROLE +", "+GENERAL_ROLE+"')")
+    @PreAuthorize("hasAnyRole('"+PRIVATE_ROLE +"')")
     @RequestMapping(method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE ,path = "/{country}")
     public ArmyInfoDto getDeployedArmyInfo(@PathVariable(value = "country") String country){
         return ArmyInfoDto.armyInfoDto()
