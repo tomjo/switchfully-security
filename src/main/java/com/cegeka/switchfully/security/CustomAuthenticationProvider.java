@@ -24,7 +24,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return fakeAuthenticationService.getUser(authentication.getName(), (String) authentication.getCredentials())
+        return fakeAuthenticationService.getUser(authentication.getPrincipal().toString(), authentication.getCredentials().toString())
                 .map(auth -> new UsernamePasswordAuthenticationToken(auth.getUsername(), auth.getPassword(), mapToGrantedAuthorities(auth.getRoles())))
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
     }
