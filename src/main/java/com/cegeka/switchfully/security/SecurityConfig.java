@@ -2,8 +2,8 @@ package com.cegeka.switchfully.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,12 +14,13 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String CIVILIAN_ROLE = "CIVILIAN";
-    private static final String PRIVATE_ROLE = "PRIVATE";
-    private static final String HUMAN_RELATIONSHIPS_ROLE = "HUMAN_RELATIONSHIPS";
-    private static final String GENERAL_ROLE = "GENERAL";
+    public static final String CIVILIAN_ROLE = "CIVILIAN";
+    public static final String PRIVATE_ROLE = "PRIVATE";
+    public static final String HUMAN_RELATIONSHIPS_ROLE = "HUMAN_RELATIONSHIPS";
+    public static final String GENERAL_ROLE = "GENERAL";
 
     private final AuthenticationEntryPoint authEntryPoint;
 
@@ -33,13 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()
-                .authenticationEntryPoint(authEntryPoint)
-                .and().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/armies").hasAnyRole(CIVILIAN_ROLE)
-                .antMatchers(HttpMethod.POST, "/armies/promote/**", "/armies/discharge/**").hasRole(HUMAN_RELATIONSHIPS_ROLE)
-                .antMatchers(HttpMethod.GET, "/armies/nuke").hasRole(GENERAL_ROLE)
-                .antMatchers(HttpMethod.GET, "/armies/{\\d+}").hasAnyRole(PRIVATE_ROLE, GENERAL_ROLE)
-        ;
+                .authenticationEntryPoint(authEntryPoint);
     }
 
     @Autowired
