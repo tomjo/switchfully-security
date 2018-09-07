@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -18,10 +17,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AuthenticationEntryPoint authEntryPoint;
-    @Autowired
-    private ArmyAuthenticationProvider armyAuthenticationProvider;
+    private final AuthenticationEntryPoint authEntryPoint;
+    private final ArmyAuthenticationProvider armyAuthenticationProvider;
+
+    public SecurityConfig(AuthenticationEntryPoint authEntryPoint, ArmyAuthenticationProvider armyAuthenticationProvider) {
+        this.authEntryPoint = authEntryPoint;
+        this.armyAuthenticationProvider = armyAuthenticationProvider;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,12 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //advantage: able to secure multiple, similar url's at the same time
                 //disadvantage: this code is completely decoupled from the Rest-controller code. This makes it easy to forget to adjust it when e.g. adding a new rest-call
 //                .antMatchers("/army").hasRole("CIVILIAN")
-//                .antMatchers("/army/promote/**").hasRole("HUMAN_RELATIONSHIPS")
+                .authorizeRequests()
+                .antMatchers("/armies/promote/{name}").access("@criminalRecordService.hasNoCriminalRecord(#name)")
 //                .antMatchers("/army/discharge/**").hasRole("HUMAN_RELATIONSHIPS")
 //                .antMatchers("/army/nuke").hasRole("GENERAL")
 //                .antMatchers("/army/**").hasAnyRole("PRIVATE", "GENERAL")
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic()
                 .authenticationEntryPoint(authEntryPoint);
     }
