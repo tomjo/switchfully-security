@@ -27,19 +27,28 @@ public class AvocadoTest extends RestAssuredTest {
 
     @Test
     public void getDeployedArmyInfo_givenKnownUsernameAndWrongPasswordEncodedAsBasicAuthenticationHeader_thenShouldNotAllowAccess() {
-        givenRequestForUser("JMILLER", "JBAKER")
-                .when()
-                .get(String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"))
-                .then()
-                .assertThat()
-                .statusCode(UNAUTHORIZED.value());
+        assertUnauthorized("JMILLER", "JBAKER", String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"));
     }
 
     @Test
     public void getDeployedArmyInfo_givenUnknownUsernameAndPasswordEncodedAsBasicAuthenticationHeader_thenShouldNotAllowAccess() {
-        givenRequestForUser("FONZ", "AYE")
+        assertUnauthorized("FONZ", "AYE", String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"));
+    }
+
+    @Test
+    public void launchNukes_givenKnownUsernameAndWrongPasswordEncodedAsBasicAuthenticationHeader_thenShouldNotAllowAccess() {
+        assertUnauthorized("JMILLER", "JBAKER", String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "nuke"));
+    }
+
+    @Test
+    public void launchNukes_givenUnknownUsernameAndPasswordEncodedAsBasicAuthenticationHeader_thenShouldNotAllowAccess() {
+        assertUnauthorized("FONZ", "AYE", String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"));
+    }
+
+    private void assertUnauthorized(String user, String password, String endpoint) {
+        givenRequestForUser(user, password)
                 .when()
-                .get(String.format("%s/%s", ArmyResource.ARMY_RESOURCE_PATH, "Belgium"))
+                .get(endpoint)
                 .then()
                 .assertThat()
                 .statusCode(UNAUTHORIZED.value());
